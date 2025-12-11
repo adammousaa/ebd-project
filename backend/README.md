@@ -17,7 +17,7 @@ _List all team members (5-6 students) below._
 | jana soliman     | 13001034   |  T2            | jhsoliman       |
 | rana magdy       | 13004373   |  T3            | Ranamagdy       |
 | adam moussa      | 13007150   |  T4            | adam ahmed      |
-| mahmoud ghaly    | 13006972   |  T4            | mahmoud ghaly   |
+| mahmoud ghaly    | 13006972   |  T4            | mahmoud ghalyy   |
 | farida farag     | 13005412   |  T3            | faridafarag     |
 | maryam basim     | 13005731   |  T3            | maryambasimm    |
 
