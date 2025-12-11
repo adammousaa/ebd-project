@@ -1,6 +1,4 @@
 
-
-Authcontrollers.js
 const User = require('../models/user');
 const generateToken = require('../utils/generateToken');
 

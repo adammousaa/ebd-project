@@ -1,4 +1,3 @@
-transactionController.js
 const Transaction = require('../models/Transaction');
 
 // @desc    Create a new transaction
