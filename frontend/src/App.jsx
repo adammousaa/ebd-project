@@ -1,49 +1,77 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import HomePage from './HomePage';
-import LoginPage from './LoginPage';
-import RegisterPage from './RegisterPage';
-import DashboardPage from './DashboardPage';
-import EmissionDashboardPage from './EmissionDashboardPage';
-import CarbonCreditPage from './CarbonCreditPage'; // ADD THIS IMPORT
+import { BrowserRouter as Router, Routes, Route, Navigate, Link } from "react-router-dom";
+import HomePage from "./HomePage";
+import LoginPage from "./LoginPage";
+import RegisterPage from "./RegisterPage";
+import DashboardPage from "./DashboardPage";
+import AIRecommendationsPage from "./pages/AIRecommendationsPage";
+import EmissionDashboardPage from "./EmissionDashboardPage";
+import CarbonCreditPage from "./CarbonCreditPage";
 
 function App() {
   return (
     <Router>
       <div className="App">
-        {/* Navbar is here in App.jsx (not separate component) */}
+
+        {/* ===== NAVBAR (All team features preserved) ===== */}
         <nav className="navbar">
           <div className="navbar-container">
-            <a href="/" className="navbar-brand">🌱 AgriCarbon Platform</a>
+            <Link to="/" className="navbar-brand">
+              🌱 AgriCarbon Platform
+            </Link>
+
             <div className="navbar-links">
-              <a href="/" className="nav-link">Home</a>
-              <a href="/dashboard" className="nav-link">Dashboard</a>
-              <a href="/login" className="nav-link">Login</a>
-              <a href="/register" className="nav-link">Register</a>
-              {/* Feature 4: */}
-              <a href="/emission-dashboard" className="nav-link">Emission Tracking</a>
-              {/* Feature 5: ADD THIS LINE */}
-              <a href="/carbon-credits" className="nav-link">Carbon Credits</a>
+              <Link to="/" className="nav-link">Home</Link>
+              <Link to="/dashboard" className="nav-link">Dashboard</Link>
+              <Link to="/login" className="nav-link">Login</Link>
+              <Link to="/register" className="nav-link">Register</Link>
+
+              <Link to="/ai-recommendations" className="nav-link">
+                AI Recommendations
+              </Link>
+
+              <Link to="/emission-dashboard" className="nav-link">
+                Emission Tracking
+              </Link>
+
+              <Link to="/carbon-credits" className="nav-link">
+                Carbon Credits
+              </Link>
             </div>
           </div>
         </nav>
 
+        {/* ===== ROUTES ===== */}
         <div className="container">
           <Routes>
-            {/* Feature 1 Routes */}
+            {/* Feature 1 */}
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
-            
-            {/* Feature 4 Route */}
-            <Route path="/emission-dashboard" element={<EmissionDashboardPage />} />
-            
-            {/* Feature 5 Route: ADD THIS LINE */}
-            <Route path="/carbon-credits" element={<CarbonCreditPage />} />
-            
+
+            {/* Feature 3 – AI Recommendations */}
+            <Route
+              path="/ai-recommendations"
+              element={<AIRecommendationsPage />}
+            />
+
+            {/* Feature 4 */}
+            <Route
+              path="/emission-dashboard"
+              element={<EmissionDashboardPage />}
+            />
+
+            {/* Feature 5 */}
+            <Route
+              path="/carbon-credits"
+              element={<CarbonCreditPage />}
+            />
+
+            {/* Fallback */}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </div>
+
       </div>
     </Router>
   );
