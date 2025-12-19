@@ -6,7 +6,8 @@ import DashboardPage from "./DashboardPage";
 import AIRecommendationsPage from "./pages/AIRecommendationsPage";
 import EmissionDashboardPage from "./EmissionDashboardPage";
 import CarbonCreditPage from "./CarbonCreditPage";
-import FarmRegistrationPage from "./FarmRegistrationPage"; // ADD THIS IMPORT
+import FarmRegistrationPage from "./FarmRegistrationPage";
+import PurchaseRequestsPage from "./PurchaseRequestsPage"; // ADD THIS IMPORT
 
 function App() {
   return (
@@ -26,21 +27,29 @@ function App() {
               <Link to="/login" className="nav-link">Login</Link>
               <Link to="/register" className="nav-link">Register</Link>
 
-              {/* ADD THIS NAV LINK FOR FEATURE 2 */}
+              {/* Feature 2 */}
               <Link to="/farm-registration" className="nav-link">
                 Register Farm
               </Link>
 
+              {/* Feature 3 */}
               <Link to="/ai-recommendations" className="nav-link">
                 AI Recommendations
               </Link>
 
+              {/* Feature 4 */}
               <Link to="/emission-dashboard" className="nav-link">
                 Emission Tracking
               </Link>
 
+              {/* Feature 5 */}
               <Link to="/carbon-credits" className="nav-link">
                 Carbon Credits
+              </Link>
+
+              {/* FEATURE 6: ADD THIS NAV LINK */}
+              <Link to="/purchase-requests" className="nav-link">
+                Purchase Credits
               </Link>
             </div>
           </div>
@@ -77,6 +86,12 @@ function App() {
             <Route
               path="/carbon-credits"
               element={<CarbonCreditPage />}
+            />
+
+            {/* FEATURE 6: ADD THIS ROUTE */}
+            <Route
+              path="/purchase-requests"
+              element={<PurchaseRequestsPage />}
             />
 
             {/* Fallback */}
