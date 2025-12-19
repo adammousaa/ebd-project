@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carbon Credit Generation</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
+    h1 { color: #2c3e50; }
+    input, button { padding: 8px; margin: 5px 0; width: 100%; }
+    .credit-list { margin-top: 20px; }
+    .credit-item { background: #fff; padding: 10px; margin-bottom: 10px; border-radius: 5px; box-shadow: 0 0 3px rgba(0,0,0,0.1); }
+  </style>
+</head>
+<body>
+  <h1>Carbon Credit Generation</h1>
+
+  <h2>Generate Credits</h2>
+  <form id="generateForm">
+    <input type="text" id="farmId" placeholder="Farm ID" required>
+    <input type="number" id="baselineEmission" placeholder="Baseline Emission (tons)" required>
+    <input type="number" id="actualEmission" placeholder="Actual Emission (tons)" required>
+    <button type="submit">Generate Credits</button>
+  </form>
+
+  <h2>All Generated Credits</h2>
+  <button id="loadCredits">Load Credits</button>
+
+  <div class="credit-list" id="creditList"></div>
+
+  <script>
+    const backendUrl = "http://localhost:5000/api/credits";
+
+    // Generate Credits
+    document.getElementById("generateForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const farmId = document.getElementById("farmId").value;
+      const baselineEmission = Number(document.getElementById("baselineEmission").value);
+      const actualEmission = Number(document.getElementById("actualEmission").value);
+
+      try {
+        const response = await fetch(`${backendUrl}/generate`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ farmId, baselineEmission, actualEmission })
+        });
+
+        const data = await response.json();
+        alert(`Credits Generated: ${data.credit.creditsGenerated}`);
+        document.getElementById("generateForm").reset();
+      } catch (err) {
+        console.error(err);
+        alert("Error generating credits");
+      }
+    });
+
+    // Load All Credits
+    document.getElementById("loadCredits").addEventListener("click", async () => {
+      try {
+        const response = await fetch(`${backendUrl}/all`);
+        const credits = await response.json();
+
+        const listDiv = document.getElementById("creditList");
+        listDiv.innerHTML = "";
+
+        credits.forEach(c => {
+          const div = document.createElement("div");
+          div.className = "credit-item";
+          div.innerHTML = `
+            <strong>Farm ID:</strong> ${c.farmId}<br>
+            <strong>Baseline:</strong> ${c.baselineEmission} tons<br>
+            <strong>Actual:</strong> ${c.actualEmission} tons<br>
+            <strong>Credits:</strong> ${c.creditsGenerated}
+          `;
+          listDiv.appendChild(div);
+        });
+
+      } catch (err) {
+        console.error(err);
+        alert("Error loading credits");
+      }
+    });
+  </script>
+</body>
+</html>
