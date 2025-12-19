@@ -1,34 +1,23 @@
-const { simulateCreditGeneration } = require("../services/creditService");
-const { saveCreditRecord, getAllCreditRecords } = require("../models/creditModel");
+const Credit = require("../models/Credit");
 
+exports.generateCredits = async (req, res) => {
+  const { farmId, baselineEmission, actualEmission } = req.body;
+  const creditsGenerated = Math.max(0, baselineEmission - actualEmission);
 
-function generateCredits(req, res) {
-  const { emissions } = req.body;
-
-  if (emissions === undefined) {
-    return res.status(400).json({ error: "Emissions value is required" });
-  }
-
-  const credits = simulateCreditGeneration(emissions);
-
-  const record = {
-    id: Date.now(),
-    emissions,
-    credits,
-    timestamp: new Date()
-  };
-
-  saveCreditRecord(record);
-
-  res.json({
-    message: "Carbon credits generated",
-    data: record
+  const credit = await Credit.create({
+    farmId,
+    baselineEmission,
+    actualEmission,
+    creditsGenerated
   });
-}
 
+  res.status(201).json({
+    message: "Carbon credits generated successfully",
+    credit
+  });
+};
 
-function listCredits(req, res) {
-  res.json(getAllCreditRecords());
-}
-
-module.exports = { generateCredits, listCredits };
+exports.listCredits = async (req, res) => {
+  const credits = await Credit.find();
+  res.json(credits);
+};

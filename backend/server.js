@@ -5,7 +5,7 @@ const connectDB = require('./src/config/db');
 const authRoutes = require('./src/Routes/authRoutes');
 const transactionRoutes = require('./src/Routes/transactionRoutes');
 const recommendationRoutes = require('./src/Routes/recommendations');
-const creditRoutes = require('./src/Routes/creditRoutes');
+const creditRoutes = require('./src/routes/creditRoutes');
 const dashboardRoutes = require('./src/Routes/dashboardRoutes');
 const { notFound, errorHandler } = require('./src/middleware/errorMiddleware');
 
