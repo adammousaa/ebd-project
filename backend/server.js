@@ -7,6 +7,7 @@ const transactionRoutes = require('./src/Routes/transactionRoutes');
 const recommendationRoutes = require('./src/Routes/recommendations');
 const creditRoutes = require('./src/routes/creditRoutes');
 const dashboardRoutes = require('./src/Routes/dashboardRoutes');
+const farmRoutes = require('./src/Routes/farmRoutes'); // ADD THIS IMPORT
 const { notFound, errorHandler } = require('./src/middleware/errorMiddleware');
 
 
@@ -29,6 +30,7 @@ app.use('/api/transactions', transactionRoutes);
 app.use('/api/credits', creditRoutes);
 app.use('/api/recommendations', recommendationRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/farms', farmRoutes); // ADD THIS LINE
 
 // Welcome route
 app.get('/', (req, res) => {
