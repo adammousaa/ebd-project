@@ -1,106 +1,124 @@
-import { BrowserRouter as Router, Routes, Route, Navigate, Link } from "react-router-dom";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+
+// Import all existing pages
 import HomePage from "./HomePage";
 import LoginPage from "./LoginPage";
 import RegisterPage from "./RegisterPage";
 import DashboardPage from "./DashboardPage";
-import AIRecommendationsPage from "./pages/AIRecommendationsPage";
 import EmissionDashboardPage from "./EmissionDashboardPage";
 import CarbonCreditPage from "./CarbonCreditPage";
 import FarmRegistrationPage from "./FarmRegistrationPage";
-import PurchaseRequestsPage from "./PurchaseRequestsPage"; // ADD THIS IMPORT
+
+// Import purchase request pages
+import PurchaseRequestsPage from "./PurchaseRequestsPage";
+import CreatePurchaseRequest from "./CreatePurchaseRequest";
+import MyPurchaseRequests from "./MyPurchaseRequests";
+import AdminDashboard from "./AdminDashboard";
+import AdminPurchaseRequests from "./AdminPurchaseRequests";
+
+// Import components
+import Navbar from "./components/Navbar";
+
+// Check if AIRecommendationsPage exists, otherwise create placeholder
+let AIRecommendationsPage;
+try {
+  AIRecommendationsPage = require("./AIRecommendationsPage").default;
+} catch {
+  AIRecommendationsPage = () => (
+    <div className="container mt-5">
+      <h2>AI Recommendations</h2>
+      <p>AI Recommendations page is under development.</p>
+    </div>
+  );
+}
 
 function App() {
   return (
-    <Router>
-      <div className="App">
+    <AuthProvider>
+      <Router>
+        <div className="App">
+          <Navbar />
+          
+          <div className="container mt-4">
+            <Routes>
+              {/* ===== PUBLIC ROUTES ===== */}
+              <Route path="/" element={<HomePage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              
+              {/* ===== PROTECTED ROUTES ===== */}
+              <Route path="/dashboard" element={
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
+              } />
 
-        {/* ===== NAVBAR (All team features preserved) ===== */}
-        <nav className="navbar">
-          <div className="navbar-container">
-            <Link to="/" className="navbar-brand">
-              🌱 AgriCarbon Platform
-            </Link>
+              <Route path="/farm-registration" element={
+                <ProtectedRoute>
+                  <FarmRegistrationPage />
+                </ProtectedRoute>
+              } />
 
-            <div className="navbar-links">
-              <Link to="/" className="nav-link">Home</Link>
-              <Link to="/dashboard" className="nav-link">Dashboard</Link>
-              <Link to="/login" className="nav-link">Login</Link>
-              <Link to="/register" className="nav-link">Register</Link>
+              <Route path="/ai-recommendations" element={
+                <ProtectedRoute>
+                  <AIRecommendationsPage />
+                </ProtectedRoute>
+              } />
 
-              {/* Feature 2 */}
-              <Link to="/farm-registration" className="nav-link">
-                Register Farm
-              </Link>
+              <Route path="/emission-dashboard" element={
+                <ProtectedRoute>
+                  <EmissionDashboardPage />
+                </ProtectedRoute>
+              } />
 
-              {/* Feature 3 */}
-              <Link to="/ai-recommendations" className="nav-link">
-                AI Recommendations
-              </Link>
+              <Route path="/carbon-credits" element={
+                <ProtectedRoute>
+                  <CarbonCreditPage />
+                </ProtectedRoute>
+              } />
 
-              {/* Feature 4 */}
-              <Link to="/emission-dashboard" className="nav-link">
-                Emission Tracking
-              </Link>
+              {/* ===== PURCHASE REQUESTS ===== */}
+              <Route path="/purchase-requests" element={
+                <ProtectedRoute requiredRole="student">
+                  <PurchaseRequestsPage />
+                </ProtectedRoute>
+              } />
 
-              {/* Feature 5 */}
-              <Link to="/carbon-credits" className="nav-link">
-                Carbon Credits
-              </Link>
+              <Route path="/create-purchase-request" element={
+                <ProtectedRoute requiredRole="student">
+                  <CreatePurchaseRequest />
+                </ProtectedRoute>
+              } />
 
-              {/* FEATURE 6: ADD THIS NAV LINK */}
-              <Link to="/purchase-requests" className="nav-link">
-                Purchase Credits
-              </Link>
-            </div>
+              <Route path="/my-purchase-requests" element={
+                <ProtectedRoute requiredRole="student">
+                  <MyPurchaseRequests />
+                </ProtectedRoute>
+              } />
+
+              {/* ===== ADMIN ROUTES ===== */}
+              <Route path="/admin" element={
+                <ProtectedRoute requiredRole="admin">
+                  <AdminDashboard />
+                </ProtectedRoute>
+              } />
+
+              <Route path="/admin/purchase-requests" element={
+                <ProtectedRoute requiredRole="admin">
+                  <AdminPurchaseRequests />
+                </ProtectedRoute>
+              } />
+
+              {/* ===== FALLBACK ROUTE ===== */}
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
           </div>
-        </nav>
-
-        {/* ===== ROUTES ===== */}
-        <div className="container">
-          <Routes>
-            {/* Feature 1 */}
-            <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
-
-            {/* Feature 2 – Farm Registration */}
-            <Route
-              path="/farm-registration"
-              element={<FarmRegistrationPage />}
-            />
-
-            {/* Feature 3 – AI Recommendations */}
-            <Route
-              path="/ai-recommendations"
-              element={<AIRecommendationsPage />}
-            />
-
-            {/* Feature 4 */}
-            <Route
-              path="/emission-dashboard"
-              element={<EmissionDashboardPage />}
-            />
-
-            {/* Feature 5 */}
-            <Route
-              path="/carbon-credits"
-              element={<CarbonCreditPage />}
-            />
-
-            {/* FEATURE 6: ADD THIS ROUTE */}
-            <Route
-              path="/purchase-requests"
-              element={<PurchaseRequestsPage />}
-            />
-
-            {/* Fallback */}
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
         </div>
-
-      </div>
-    </Router>
+      </Router>
+    </AuthProvider>
   );
 }
 
