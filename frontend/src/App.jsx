@@ -6,6 +6,7 @@ import DashboardPage from "./DashboardPage";
 import AIRecommendationsPage from "./pages/AIRecommendationsPage";
 import EmissionDashboardPage from "./EmissionDashboardPage";
 import CarbonCreditPage from "./CarbonCreditPage";
+import FarmRegistrationPage from "./FarmRegistrationPage"; // ADD THIS IMPORT
 
 function App() {
   return (
@@ -24,6 +25,11 @@ function App() {
               <Link to="/dashboard" className="nav-link">Dashboard</Link>
               <Link to="/login" className="nav-link">Login</Link>
               <Link to="/register" className="nav-link">Register</Link>
+
+              {/* ADD THIS NAV LINK FOR FEATURE 2 */}
+              <Link to="/farm-registration" className="nav-link">
+                Register Farm
+              </Link>
 
               <Link to="/ai-recommendations" className="nav-link">
                 AI Recommendations
@@ -48,6 +54,12 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
+
+            {/* Feature 2 – Farm Registration */}
+            <Route
+              path="/farm-registration"
+              element={<FarmRegistrationPage />}
+            />
 
             {/* Feature 3 – AI Recommendations */}
             <Route
