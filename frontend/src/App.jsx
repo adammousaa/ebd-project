@@ -4,6 +4,7 @@ import LoginPage from './LoginPage';
 import RegisterPage from './RegisterPage';
 import DashboardPage from './DashboardPage';
 import EmissionDashboardPage from './EmissionDashboardPage';
+import CarbonCreditPage from './CarbonCreditPage'; // ADD THIS IMPORT
 
 function App() {
   return (
@@ -18,8 +19,10 @@ function App() {
               <a href="/dashboard" className="nav-link">Dashboard</a>
               <a href="/login" className="nav-link">Login</a>
               <a href="/register" className="nav-link">Register</a>
-              {/* ADD THIS LINE FOR FEATURE 4: */}
+              {/* Feature 4: */}
               <a href="/emission-dashboard" className="nav-link">Emission Tracking</a>
+              {/* Feature 5: ADD THIS LINE */}
+              <a href="/carbon-credits" className="nav-link">Carbon Credits</a>
             </div>
           </div>
         </nav>
@@ -34,6 +37,9 @@ function App() {
             
             {/* Feature 4 Route */}
             <Route path="/emission-dashboard" element={<EmissionDashboardPage />} />
+            
+            {/* Feature 5 Route: ADD THIS LINE */}
+            <Route path="/carbon-credits" element={<CarbonCreditPage />} />
             
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
