@@ -203,3 +203,239 @@ button:hover {
   border-radius: 20px;
   font-size: 0.9rem;
 }
+
+/* Emission Dashboard Styles */
+.emission-page {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.emission-header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding: 25px;
+  background: linear-gradient(135deg, #2c3e50 0%, #27ae60 100%);
+  color: white;
+  border-radius: 12px;
+}
+
+.emission-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.emission-header p {
+  margin: 5px 0;
+  opacity: 0.9;
+}
+
+.subtitle {
+  font-style: italic;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.summary-card {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+  text-align: center;
+  margin-bottom: 30px;
+  border-top: 5px solid #27ae60;
+}
+
+.summary-card h2 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+}
+
+.total-value {
+  font-size: 3.5rem;
+  font-weight: bold;
+  color: #2c3e50;
+  margin: 15px 0;
+}
+
+.unit {
+  font-size: 1.5rem;
+  color: #7f8c8d;
+}
+
+.trend {
+  color: #27ae60;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.chart-section {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+  margin-bottom: 30px;
+}
+
+.chart-section h3 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.bar-chart {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  height: 250px;
+  padding: 20px 0;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.bar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bar-label {
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: #555;
+}
+
+.bar {
+  width: 50px;
+  background: linear-gradient(to top, #4CAF50, #8BC34A);
+  border-radius: 5px 5px 0 0;
+  position: relative;
+  transition: height 0.3s;
+}
+
+.bar:hover {
+  background: linear-gradient(to top, #45a049, #7cb342);
+}
+
+.bar-value {
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.pie-chart {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+}
+
+.pie-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.source-info {
+  margin-top: 10px;
+}
+
+.source-name {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.source-value {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.data-table {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+  margin-bottom: 30px;
+  overflow-x: auto;
+}
+
+.data-table h3 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+.data-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th {
+  background-color: #f8f9fa;
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+  color: #2c3e50;
+  border-bottom: 2px solid #eee;
+}
+
+.data-table td {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.data-table tr:hover {
+  background-color: #f8f9fa;
+}
+
+.positive {
+  color: #27ae60;
+  font-weight: 500;
+}
+
+.negative {
+  color: #e74c3c;
+  font-weight: 500;
+}
+
+.status {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.status.good {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status.neutral {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.milestone-notes {
+  background-color: #e3f2fd;
+  padding: 20px;
+  border-radius: 12px;
+  border-left: 5px solid #2196F3;
+  margin-top: 30px;
+}
+
+.milestone-notes h3 {
+  color: #1565c0;
+  margin-bottom: 15px;
+}
+
+.milestone-notes p {
+  color: #555;
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
