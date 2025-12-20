@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance with default config
 const API = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api',
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -61,12 +61,20 @@ export const purchaseAPI = {
   getPurchaseStats: () => API.get('/purchase-requests/stats/overview'),
 };
 
+// Farm API calls
+export const farmAPI = {
+  registerFarm: (data) => API.post('/farms/register', data),
+  getFarms: () => API.get('/farms'),
+  getFarmById: (id) => API.get(`/farms/${id}`),
+  getFarmsNearLocation: (lat, lng, radius) => API.get(`/farms/near/${lat}/${lng}/${radius}`),
+};
+
 // Credit API calls
 export const creditAPI = {
-  getCredits: () => API.get('/credits'),
-  addCredits: (amount) => API.post('/credits/add', { amount }),
-  deductCredits: (amount) => API.post('/credits/deduct', { amount }),
-  getCreditHistory: () => API.get('/credits/history'),
+  generateCredits: (data) => API.post('/credits/generate', data),
+  getAllCredits: () => API.get('/credits/all'),
+  getCreditById: (id) => API.get(`/credits/${id}`),
+  updateCreditStatus: (id, status) => API.put(`/credits/${id}/status`, { status }),
 };
 
 // Transaction API calls

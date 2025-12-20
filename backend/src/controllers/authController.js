@@ -7,7 +7,14 @@ const generateToken = require('../utils/generateToken');
 // @access  Public
 const registerUser = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, role } = req.body;
+
+    // Validate required fields
+    if (!username || !email || !password) {
+      return res.status(400).json({
+        message: 'Please provide username, email, and password'
+      });
+    }
 
     // Check if user exists
     const userExists = await User.findOne({ $or: [{ email }, { username }] });
@@ -20,12 +27,19 @@ const registerUser = async (req, res) => {
       });
     }
 
-    // Create user
-    const user = await User.create({
+    // Create user (role will default to 'student' if not provided or invalid)
+    const userData = {
       username,
       email,
       password
-    });
+    };
+    
+    // Only add role if it's a valid role
+    if (role && ['student', 'admin', 'company', 'user'].includes(role)) {
+      userData.role = role;
+    }
+
+    const user = await User.create(userData);
 
     if (user) {
       res.status(201).json({
@@ -39,6 +53,7 @@ const registerUser = async (req, res) => {
       res.status(400).json({ message: 'Invalid user data' });
     }
   } catch (error) {
+    console.error('Registration error:', error);
     res.status(500).json({ message: error.message });
   }
 };

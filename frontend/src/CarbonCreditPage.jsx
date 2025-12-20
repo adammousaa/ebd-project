@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
-import './index.css'; // Your existing CSS
+import React, { useState, useEffect } from 'react';
+import './index.css';
 
 function CarbonCreditPage() {
   const [credits, setCredits] = useState([]);
   const [loading, setLoading] = useState(false);
-  const backendUrl = "http://localhost:5000/api/credits";
 
-  // Form state
+  useEffect(() => {
+    loadCredits();
+  }, []);
+
   const [formData, setFormData] = useState({
     farmId: '',
     baselineEmission: '',
@@ -26,32 +28,28 @@ function CarbonCreditPage() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${backendUrl}/generate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          farmId: formData.farmId,
-          baselineEmission: Number(formData.baselineEmission),
-          actualEmission: Number(formData.actualEmission)
-        })
+      const { creditAPI } = await import('./services/api');
+      const response = await creditAPI.generateCredits({
+        farmId: formData.farmId,
+        baselineEmission: Number(formData.baselineEmission),
+        actualEmission: Number(formData.actualEmission)
       });
 
-      const data = await response.json();
-      alert(`✅ Credits Generated: ${data.credit.creditsGenerated}`);
-      
-      // Reset form
-      setFormData({
-        farmId: '',
-        baselineEmission: '',
-        actualEmission: ''
-      });
+      if (response.data.success) {
+        alert(`✅ Credits Generated: ${response.data.credit.creditsGenerated} credits`);
+        
+        setFormData({
+          farmId: '',
+          baselineEmission: '',
+          actualEmission: ''
+        });
 
-      // Reload credits list
-      loadCredits();
-      
+        loadCredits();
+      }
     } catch (err) {
       console.error("Error generating credits:", err);
-      alert("❌ Error generating credits. Check console or backend.");
+      const errorMsg = err.response?.data?.message || err.message || "Error generating credits";
+      alert(`❌ ${errorMsg}`);
     } finally {
       setLoading(false);
     }
@@ -59,119 +57,245 @@ function CarbonCreditPage() {
 
   const loadCredits = async () => {
     try {
-      const response = await fetch(`${backendUrl}/all`);
-      const creditsData = await response.json();
-      setCredits(creditsData);
+      const { creditAPI } = await import('./services/api');
+      const response = await creditAPI.getAllCredits();
+      setCredits(response.data.data || []);
     } catch (err) {
       console.error("Error loading credits:", err);
-      alert("Error loading credits");
+      alert("Error loading credits: " + (err.response?.data?.message || err.message));
     }
   };
 
+  const calculateReduction = (baseline, actual) => {
+    if (!baseline || baseline === 0) return 0;
+    return ((baseline - actual) / baseline * 100).toFixed(1);
+  };
+
   return (
-    <div className="carbon-credit-page container">
-      <div className="emission-header">
-        <h1>Carbon Credit Generation</h1>
-        <p>Feature 5: Simulated emission-to-credit logic</p>
-        <p className="subtitle">Convert emission reductions into carbon credits</p>
+    <div className="fade-in">
+      <div className="page-header">
+        <div className="container">
+          <h1 className="page-title">
+            <i className="bi bi-credit-card me-3"></i>
+            Carbon Credit Generation
+          </h1>
+          <p className="page-subtitle">
+            Convert emission reductions into verifiable carbon credits
+          </p>
+        </div>
       </div>
 
-      <div className="credit-section">
-        <div className="summary-card">
-          <h2>Generate New Credits</h2>
-          <form onSubmit={handleGenerate} id="generateForm">
-            <div className="form-group">
-              <label htmlFor="farmId">Farm ID</label>
-              <input 
-                type="text" 
-                id="farmId" 
-                placeholder="Enter Farm ID" 
-                value={formData.farmId}
-                onChange={handleInputChange}
-                required 
-              />
+      <div className="container">
+        {/* Generate Form */}
+        <div className="modern-card mb-4">
+          <h3 className="mb-4">
+            <i className="bi bi-plus-circle me-2 text-success"></i>
+            Generate New Credits
+          </h3>
+          <form onSubmit={handleGenerate}>
+            <div className="row g-3">
+              <div className="col-md-4">
+                <div className="form-group-modern">
+                  <label htmlFor="farmId" className="form-label-modern">
+                    <i className="bi bi-house-door me-2"></i>
+                    Farm ID
+                  </label>
+                  <input 
+                    type="text" 
+                    className="form-control-modern"
+                    id="farmId" 
+                    placeholder="Enter Farm ID" 
+                    value={formData.farmId}
+                    onChange={handleInputChange}
+                    required 
+                  />
+                </div>
+              </div>
+
+              <div className="col-md-4">
+                <div className="form-group-modern">
+                  <label htmlFor="baselineEmission" className="form-label-modern">
+                    <i className="bi bi-graph-up me-2"></i>
+                    Baseline Emission (tons)
+                  </label>
+                  <input 
+                    type="number" 
+                    className="form-control-modern"
+                    id="baselineEmission" 
+                    placeholder="Baseline emission" 
+                    value={formData.baselineEmission}
+                    onChange={handleInputChange}
+                    required 
+                    step="0.01"
+                    min="0"
+                  />
+                </div>
+              </div>
+
+              <div className="col-md-4">
+                <div className="form-group-modern">
+                  <label htmlFor="actualEmission" className="form-label-modern">
+                    <i className="bi bi-graph-down me-2"></i>
+                    Actual Emission (tons)
+                  </label>
+                  <input 
+                    type="number" 
+                    className="form-control-modern"
+                    id="actualEmission" 
+                    placeholder="Actual emission" 
+                    value={formData.actualEmission}
+                    onChange={handleInputChange}
+                    required 
+                    step="0.01"
+                    min="0"
+                  />
+                </div>
+              </div>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="baselineEmission">Baseline Emission (tons)</label>
-              <input 
-                type="number" 
-                id="baselineEmission" 
-                placeholder="Baseline emission amount" 
-                value={formData.baselineEmission}
-                onChange={handleInputChange}
-                required 
-              />
-            </div>
+            {formData.baselineEmission && formData.actualEmission && 
+             parseFloat(formData.baselineEmission) > parseFloat(formData.actualEmission) && (
+              <div className="alert-modern alert-success mt-3">
+                <i className="bi bi-check-circle me-2"></i>
+                Estimated Credits: <strong>
+                  {((parseFloat(formData.baselineEmission) - parseFloat(formData.actualEmission)) / 1000).toFixed(2)} credits
+                </strong>
+                {' '}({calculateReduction(parseFloat(formData.baselineEmission), parseFloat(formData.actualEmission))}% reduction)
+              </div>
+            )}
 
-            <div className="form-group">
-              <label htmlFor="actualEmission">Actual Emission (tons)</label>
-              <input 
-                type="number" 
-                id="actualEmission" 
-                placeholder="Actual emission amount" 
-                value={formData.actualEmission}
-                onChange={handleInputChange}
-                required 
-              />
-            </div>
-
-            <button type="submit" disabled={loading}>
-              {loading ? 'Generating...' : 'Generate Credits'}
+            <button 
+              type="submit" 
+              className="btn btn-success mt-3"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2"></span>
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <i className="bi bi-lightning-charge me-2"></i>
+                  Generate Credits
+                </>
+              )}
             </button>
           </form>
         </div>
 
-        <div className="data-table">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3>All Generated Credits</h3>
-            <button onClick={loadCredits} className="secondary-btn">
-              Load Credits
+        {/* Credits List */}
+        <div className="modern-card mb-4">
+          <div className="d-flex justify-content-between align-items-center mb-4">
+            <h3 className="mb-0">
+              <i className="bi bi-list-ul me-2 text-primary"></i>
+              All Generated Credits
+            </h3>
+            <button onClick={loadCredits} className="btn btn-outline-primary btn-sm">
+              <i className="bi bi-arrow-clockwise me-2"></i>
+              Refresh
             </button>
           </div>
 
           {credits.length > 0 ? (
-            <table>
-              <thead>
-                <tr>
-                  <th>Farm ID</th>
-                  <th>Baseline (tons)</th>
-                  <th>Actual (tons)</th>
-                  <th>Reduction</th>
-                  <th>Credits Generated</th>
-                  <th>Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {credits.map((credit, index) => (
-                  <tr key={index}>
-                    <td>{credit.farmId}</td>
-                    <td>{credit.baselineEmission}</td>
-                    <td>{credit.actualEmission}</td>
-                    <td className="positive">
-                      {((credit.baselineEmission - credit.actualEmission) / credit.baselineEmission * 100).toFixed(1)}%
-                    </td>
-                    <td><strong>{credit.creditsGenerated}</strong></td>
-                    <td>{new Date().toLocaleDateString()}</td>
+            <div className="table-responsive">
+              <table className="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Farm ID</th>
+                    <th>Baseline (tons)</th>
+                    <th>Actual (tons)</th>
+                    <th>Reduction</th>
+                    <th>Credits Generated</th>
+                    <th>Status</th>
+                    <th>Date</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {credits.map((credit, index) => (
+                    <tr key={credit._id || index}>
+                      <td><strong>{credit.farmId}</strong></td>
+                      <td>{credit.baselineEmission?.toLocaleString()}</td>
+                      <td>{credit.actualEmission?.toLocaleString()}</td>
+                      <td className="text-success">
+                        <i className="bi bi-arrow-down me-1"></i>
+                        {calculateReduction(credit.baselineEmission, credit.actualEmission)}%
+                      </td>
+                      <td>
+                        <span className="badge bg-success" style={{ fontSize: '1rem', padding: '0.5rem' }}>
+                          {credit.creditsGenerated} credits
+                        </span>
+                      </td>
+                      <td>
+                        <span className={`badge ${
+                          credit.status === 'verified' ? 'bg-success' : 
+                          credit.status === 'sold' ? 'bg-info' : 
+                          'bg-warning'
+                        }`}>
+                          {credit.status || 'pending'}
+                        </span>
+                      </td>
+                      <td>{new Date(credit.createdAt).toLocaleDateString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           ) : (
-            <div className="no-data">
-              <p>No credits generated yet. Generate some to see them here!</p>
+            <div className="text-center py-5">
+              <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>💳</div>
+              <h4 className="mb-3">No Credits Generated Yet</h4>
+              <p className="text-muted mb-4">
+                Generate your first carbon credits by filling out the form above.
+              </p>
             </div>
           )}
         </div>
 
-        <div className="info-card">
-          <h3>How Carbon Credits Work</h3>
-          <ul>
-            <li><strong>Conversion Rate:</strong> 1000 kg (1 ton) CO2 reduction = 1 Carbon Credit</li>
-            <li><strong>Formula:</strong> Credits = (Baseline - Actual) / 1000</li>
-            <li><strong>Example:</strong> Reduce from 5000 tons to 3000 tons = 2 credits earned</li>
-            <li>Credits can be traded or sold in carbon markets</li>
-          </ul>
+        {/* Info Card */}
+        <div className="modern-card">
+          <h3 className="mb-4">
+            <i className="bi bi-info-circle me-2 text-info"></i>
+            How Carbon Credits Work
+          </h3>
+          <div className="row g-4">
+            <div className="col-md-6">
+              <div className="feature-card">
+                <div className="feature-icon">📊</div>
+                <h5 className="feature-title">Conversion Rate</h5>
+                <p className="feature-description">
+                  1000 kg (1 ton) CO₂ reduction = 1 Carbon Credit
+                </p>
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="feature-card">
+                <div className="feature-icon">🧮</div>
+                <h5 className="feature-title">Formula</h5>
+                <p className="feature-description">
+                  Credits = (Baseline - Actual) / 1000
+                </p>
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="feature-card">
+                <div className="feature-icon">💡</div>
+                <h5 className="feature-title">Example</h5>
+                <p className="feature-description">
+                  Reduce from 5000 tons to 3000 tons = 2 credits earned
+                </p>
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="feature-card">
+                <div className="feature-icon">💰</div>
+                <h5 className="feature-title">Trading</h5>
+                <p className="feature-description">
+                  Credits can be traded or sold in carbon markets
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

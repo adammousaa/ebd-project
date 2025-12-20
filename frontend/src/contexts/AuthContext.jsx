@@ -23,17 +23,18 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     try {
       const response = await authAPI.register(userData);
-      const { token, ...userData } = response.data;
+      const { token, ...userInfo } = response.data;
       
       localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(userData));
-      setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userInfo));
+      setUser(userInfo);
       
       return { success: true, data: response.data };
     } catch (error) {
+      console.error('Registration error:', error);
       return { 
         success: false, 
-        error: error.response?.data?.message || 'Registration failed' 
+        error: error.response?.data?.message || error.message || 'Registration failed' 
       };
     }
   };
@@ -41,17 +42,18 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const response = await authAPI.login({ email, password });
-      const { token, ...userData } = response.data;
+      const { token, ...userInfo } = response.data;
       
       localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(userData));
-      setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userInfo));
+      setUser(userInfo);
       
       return { success: true, data: response.data };
     } catch (error) {
+      console.error('Login error:', error);
       return { 
         success: false, 
-        error: error.response?.data?.message || 'Login failed' 
+        error: error.response?.data?.message || error.message || 'Login failed' 
       };
     }
   };

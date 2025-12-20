@@ -8,7 +8,7 @@ const { notFound, errorHandler } = require('./src/middleware/errorMiddleware');
 const authRoutes = require('./src/Routes/authRoutes');
 const transactionRoutes = require('./src/Routes/transactionRoutes');
 const recommendationRoutes = require('./src/Routes/recommendations');
-const creditRoutes = require('./src/routes/creditRoutes');
+const creditRoutes = require('./src/Routes/creditRoutes');
 const dashboardRoutes = require('./src/Routes/dashboardRoutes');
 const farmRoutes = require('./src/Routes/farmRoutes');
 const purchaseRoutes = require('./src/Routes/purchaseRoutes');
@@ -23,7 +23,16 @@ connectDB();
 const app = express();
 
 // ========== MIDDLEWARE ==========
-app.use(cors());
+// Configure CORS with explicit options
+app.use(cors({
+  origin: true, // Allow all origins in development
+  credentials: true, // Allow credentials (cookies, authorization headers)
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Ensure JSON responses
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

@@ -9,7 +9,7 @@ const User = require('../models/user');
 exports.createPurchaseRequest = async (req, res) => {
     try {
         const { items, companyId, notes } = req.body;
-        const studentId = req.user.id; // Assuming auth middleware sets req.user
+        const studentId = req.user._id; // Auth middleware sets req.user._id
 
         // Calculate total amount
         const totalAmount = items.reduce((sum, item) => 
@@ -115,7 +115,7 @@ exports.getAllPurchaseRequests = async (req, res) => {
 // @access  Private (Student)
 exports.getMyPurchaseRequests = async (req, res) => {
     try {
-        const studentId = req.user.id;
+        const studentId = req.user._id;
         const { status } = req.query;
         
         let filter = { studentId };
@@ -160,7 +160,7 @@ exports.getPurchaseRequestById = async (req, res) => {
         }
 
         // Check authorization (student can only see their own, admin/company can see all)
-        if (req.user.role === 'student' && purchaseRequest.studentId._id.toString() !== req.user.id) {
+        if (req.user.role === 'student' && purchaseRequest.studentId._id.toString() !== req.user._id.toString()) {
             return res.status(403).json({ 
                 success: false, 
                 message: 'Not authorized to view this request' 
@@ -188,7 +188,7 @@ exports.getPurchaseRequestById = async (req, res) => {
 exports.approvePurchaseRequest = async (req, res) => {
     try {
         const { id } = req.params;
-        const reviewerId = req.user.id;
+        const reviewerId = req.user._id;
 
         const purchaseRequest = await PurchaseRequest.findById(id);
         
@@ -256,7 +256,7 @@ exports.rejectPurchaseRequest = async (req, res) => {
     try {
         const { id } = req.params;
         const { reason } = req.body;
-        const reviewerId = req.user.id;
+        const reviewerId = req.user._id;
 
         if (!reason || reason.trim() === '') {
             return res.status(400).json({ 
@@ -311,7 +311,7 @@ exports.rejectPurchaseRequest = async (req, res) => {
 exports.cancelPurchaseRequest = async (req, res) => {
     try {
         const { id } = req.params;
-        const studentId = req.user.id;
+        const studentId = req.user._id;
 
         const purchaseRequest = await PurchaseRequest.findById(id);
         

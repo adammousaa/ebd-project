@@ -4,7 +4,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 // Import all existing pages
-import HomePage from "./HomePage";
+import HomePage from "./Homepage";
 import LoginPage from "./LoginPage";
 import RegisterPage from "./RegisterPage";
 import DashboardPage from "./DashboardPage";
@@ -21,28 +21,16 @@ import AdminPurchaseRequests from "./AdminPurchaseRequests";
 
 // Import components
 import Navbar from "./components/Navbar";
-
-// Check if AIRecommendationsPage exists, otherwise create placeholder
-let AIRecommendationsPage;
-try {
-  AIRecommendationsPage = require("./AIRecommendationsPage").default;
-} catch {
-  AIRecommendationsPage = () => (
-    <div className="container mt-5">
-      <h2>AI Recommendations</h2>
-      <p>AI Recommendations page is under development.</p>
-    </div>
-  );
-}
+import AIRecommendationsPage from "./pages/AIRecommendationsPage";
 
 function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="App">
+        <div className="App" style={{ minHeight: '100vh', backgroundColor: '#f3f4f6' }}>
           <Navbar />
           
-          <div className="container mt-4">
+          <main style={{ paddingBottom: '3rem' }}>
             <Routes>
               {/* ===== PUBLIC ROUTES ===== */}
               <Route path="/" element={<HomePage />} />
@@ -115,7 +103,7 @@ function App() {
               {/* ===== FALLBACK ROUTE ===== */}
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
-          </div>
+          </main>
         </div>
       </Router>
     </AuthProvider>
